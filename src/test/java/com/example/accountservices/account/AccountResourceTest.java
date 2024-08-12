@@ -1,5 +1,6 @@
 package com.example.accountservices.account;
 
+import com.example.accountservices.account.exception.AccountDataIntegrityViolationException;
 import com.example.accountservices.account.model.Account;
 import com.example.accountservices.account.model.CreateAccountRequest;
 import org.javamoney.moneta.Money;
@@ -86,5 +87,23 @@ public class AccountResourceTest {
                 .andExpect(jsonPath("$.name").value("New Account"))
                 .andExpect(jsonPath("$.currency").value("USD"))
                 .andExpect(jsonPath("$.balance").value(707.23));
+    }
+
+    @Test
+    void createAccount_accountNameExistsTest() throws Exception {
+        given(accountService.createAccount(any(CreateAccountRequest.class)))
+                .willThrow(new AccountDataIntegrityViolationException("New Account"));
+
+        mockMvc.perform(post("/accounts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "accountName": "New Account",
+                                    "currency": "USD",
+                                    "accountBalance": 707.23,
+                                    "treasury": false
+                                }
+                                """))
+                .andExpect(status().isConflict());
     }
 }
