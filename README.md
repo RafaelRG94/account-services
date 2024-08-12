@@ -30,6 +30,12 @@ To launch the application, simply navigate to the root directory of the project 
 
 The project configuration is the default configuration, so the service is exposed on localhost:8080.
 
+### Run the test
+
+Again, navigate to the root directory of the project and run:
+
+```mvn test```
+
 ### Useful cURL requests to test manually the service
 ```curl -X POST -H "Content-type: application/json" -d '{ "accountName": "Account1", "currency": "USD", "accountBalance": 2, "treasury": false }' 'http://localhost:8080/accounts'```
 
@@ -38,3 +44,12 @@ The project configuration is the default configuration, so the service is expose
 The following links have been used during development:
 
 * https://spring.io/guides/tutorials/rest: for initial configuration, as well as creating custom exceptions and using JPA repositories
+* It has been necessary to add this dependency in order to be able to work with Optional in the repositories: https://stackoverflow.com/questions/77698423/class-org-springframework-data-repository-query-defaultparameters-cannot-be-cast
+```
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-commons</artifactId>
+    <version>3.2.5</version>
+</dependency>
+```
+* It has also been necessary to create a converter so that the JPA repositories can handle the Java Money Money class
